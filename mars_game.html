@@ -2,12 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>مغامرة المريخ والبايثون | Mars Python Runner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>مغامرة المريخ والبايثون</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-    body { background: #0a0612; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+    body { background: #0a0612; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: -webkit-fill-available; overflow: hidden; }
 
     #game-container {
       width: 440px; height: 750px;
@@ -17,6 +17,10 @@
       box-shadow: 0 0 50px rgba(55, 118, 171, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
       position: relative; overflow: hidden;
       border: 4px solid #ffd43b;
+    }
+
+    @media (max-width: 600px) {
+      #game-container { border-radius: 0; border: none; height: 100vh; width: 100vw; }
     }
 
     .stars {
@@ -35,34 +39,15 @@
     h1 { font-size: 26px; font-weight: 900; color: #3776ab; text-shadow: 0 0 12px #3776ab, 0 0 2px #fff; margin-bottom: 10px; }
     p { font-size: 14px; color: #e0e0e0; margin-bottom: 15px; line-height: 1.5; }
 
-    input { width: 80%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 2px solid #3776ab; background: rgba(255, 255, 255, 0.1); color: #fff; text-align: center; outline: none; font-size: 16px; }
+    input { width: 85%; padding: 14px; margin: 8px 0; border-radius: 14px; border: 2px solid #3776ab; background: rgba(255, 255, 255, 0.1); color: #fff; text-align: center; outline: none; font-size: 16px; }
+    input:focus { border-color: #ffd43b; background: rgba(255, 255, 255, 0.2); }
+
     .btn { background: linear-gradient(45deg, #3776ab, #ffd43b); color: #111; border: none; padding: 12px 28px; font-size: 17px; font-weight: 900; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 18px rgba(55, 118, 171, 0.6); margin-top: 10px; transition: 0.2s; }
     .btn:active { transform: scale(0.95); }
 
-    .main-menu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      width: 100%;
-      margin-top: 20px;
-    }
-    .menu-btn-large {
-      grid-column: span 2;
-      padding: 18px;
-      font-size: 22px;
-      background: linear-gradient(45deg, #2ed573, #ffd43b);
-      color: #000;
-    }
-    .menu-btn-side {
-      padding: 15px;
-      font-size: 15px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid #3776ab;
-      color: #fff;
-      border-radius: 18px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+    .main-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 20px; }
+    .menu-btn-large { grid-column: span 2; padding: 18px; font-size: 22px; background: linear-gradient(45deg, #2ed573, #ffd43b); color: #000; }
+    .menu-btn-side { padding: 15px; font-size: 15px; background: rgba(255, 255, 255, 0.1); border: 2px solid #3776ab; color: #fff; border-radius: 18px; cursor: pointer; transition: 0.2s; }
     .menu-btn-side:hover { background: #3776ab; }
 
     .color-picker-wrapper { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 15px; margin: 10px 0; }
@@ -76,7 +61,6 @@
     .hoverboard-item { width: 70px; height: 14px; background: linear-gradient(90deg, #3776ab, #00d2d3); border-radius: 10px; position: absolute; bottom: 5px; left: 5px; box-shadow: 0 10px 15px #00d2d3; animation: hoverPulse 1s infinite alternate; }
     @keyframes hoverPulse { from { transform: translateY(0); } to { transform: translateY(4px); } }
 
-    /* تأثير الدرع الواقي */
     .shield-active { filter: drop-shadow(0 0 12px #00d2d3); }
 
     #game-track { width: 100%; height: 100%; position: relative; overflow: hidden; }
@@ -87,23 +71,10 @@
 
     .game-entity { position: absolute; display: flex; justify-content: center; align-items: center; z-index: 8; transform: translateX(-50%); }
     
-    .py-coin {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #3776ab 50%, #ffd43b 50%);
-      border-radius: 50%;
-      border: 2px solid #fff;
-      box-shadow: 0 0 15px rgba(55, 118, 171, 0.8);
-      animation: spinY 1s linear infinite;
-    }
+    .py-coin { width: 36px; height: 36px; background: linear-gradient(135deg, #3776ab 50%, #ffd43b 50%); border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 15px rgba(55, 118, 171, 0.8); animation: spinY 1s linear infinite; }
     @keyframes spinY { 100% { transform: rotateY(360deg); } }
 
-    .meteor {
-      width: 48px; height: 50px;
-      background: radial-gradient(circle at 30% 30%, #666, #222);
-      border-radius: 40% 60% 70% 30%;
-      box-shadow: 0 -15px 20px -5px #ff4757, 0 -30px 15px -10px #ffa502, inset -5px -5px 10px #000;
-      animation: meteorShake 0.4s infinite alternate;
-    }
+    .meteor { width: 48px; height: 50px; background: radial-gradient(circle at 30% 30%, #666, #222); border-radius: 40% 60% 70% 30%; box-shadow: 0 -15px 20px -5px #ff4757, 0 -30px 15px -10px #ffa502, inset -5px -5px 10px #000; animation: meteorShake 0.4s infinite alternate; }
     @keyframes meteorShake { 0% { transform: translateX(-2px) rotate(0deg); } 100% { transform: translateX(2px) rotate(15deg); } }
 
     .software-bug { font-size: 34px; filter: drop-shadow(0 0 10px #1dd1a1); animation: bugGlitch 0.2s infinite; }
@@ -119,10 +90,9 @@
     #reward-pop { position: absolute; top: 40%; left: 50%; transform: translateX(-50%); font-size: 24px; font-weight: bold; color: #ffd43b; text-shadow: 0 0 12px #ffd43b; animation: floatUp 1s forwards; pointer-events: none; z-index: 20; }
     @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, -70px); } }
 
-    /* أزرار اللمس للهواتف الذكية */
-    .touch-controls { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; z-index: 15; }
-    .touch-btn { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.15); border: 2px solid #ffd43b; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #fff; backdrop-filter: blur(4px); }
-    .touch-btn:active { background: rgba(255, 212, 59, 0.4); }
+    .touch-controls { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 25px; z-index: 15; pointer-events: none; }
+    .touch-btn { width: 65px; height: 65px; background: rgba(255, 255, 255, 0.2); border: 2px solid #ffd43b; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 26px; color: #fff; backdrop-filter: blur(4px); pointer-events: auto; }
+    .touch-btn:active { background: rgba(255, 212, 59, 0.5); transform: scale(0.92); }
   </style>
 </head>
 <body>
@@ -138,11 +108,11 @@
 
   <!-- Screen 1: Login -->
   <div class="screen" id="welcome-screen">
-    <h1>مهمة المريخ والبايثون 🚀🐍</h1>
-    <p>أهلاً بكِ في مهمة استكشاف المريخ! ادخلي بياناتك للبدء:</p>
-    <input type="text" id="player-name" placeholder="ادخلي اسمكِ..." required>
-    <input type="number" id="player-age" placeholder="العمر (مثال: 15)" required>
-    <button class="btn" onclick="soundClick(); setupUserAndGoHome();">الدخول للعبة 🚀</button>
+    <h1>مرحباً بكم يا فتيات! 👋</h1>
+    <p>ادخلي بياناتكِ للانضمام لمغامرة المريخ والبايثون:</p>
+    <input type="text" id="player-name" placeholder="ادخلي اسمكِ..." autofocus>
+    <input type="number" id="player-age" placeholder="العمر (مثال: 15)">
+    <button class="btn" id="login-btn" onclick="soundClick(); setupUserAndGoHome();">الدخول للعبة 🚀</button>
   </div>
 
   <!-- Screen 2: Main Home Menu -->
@@ -153,16 +123,16 @@
     </div>
 
     <div class="main-menu-grid">
-      <button class="btn menu-btn-large" onclick="soundClick(); startGame();">العب الآن 🎮</button>
-      <button class="menu-btn-side" onclick="soundClick(); goToCloset();">غرفة الملابس 👗</button>
+      <button class="btn menu-btn-large" onclick="soundClick(); checkFirstTimeOrStart();">العب الآن 🎮</button>
+      <button class="menu-btn-side" onclick="soundClick(); goToCloset();">المدخل إلى الأزياء والملابس 👗</button>
       <button class="menu-btn-side" onclick="soundClick(); goToShop();">متجر المعدات 🛒</button>
     </div>
   </div>
 
   <!-- Screen 3: Closet -->
   <div class="screen hidden" id="closet-screen">
-    <h1>تجهيز الرائدة 👩‍🚀</h1>
-    <p>اختاري لون سترة الفضاء الخاصة بك:</p>
+    <h1>الأزياء والملابس 👗</h1>
+    <p>اختاري لون سترة الفضاء الخاصة بكِ:</p>
 
     <div class="avatar-preview">
       <div class="astronaut" id="closet-astronaut">
@@ -183,7 +153,7 @@
   <!-- Screen 4: Shop -->
   <div class="screen hidden" id="shop-screen">
     <h1 style="color:#ffd43b;">متجر المريخ 🛒</h1>
-    <p>استخدمي نقاط البايثون لشراء الحماية:</p>
+    <p>استخدمي نقاط البايثون لشراء الحماية والمعدات:</p>
     <div style="color:#00d2d3; font-size:18px; margin-bottom:10px;">الرصيد: <span id="shop-coins-display">0</span> 🐍</div>
 
     <div class="shop-item">
@@ -198,7 +168,21 @@
     <button class="btn" style="background:#888; color:#fff;" onclick="soundClick(); goToHome();">العودة للرئيسية ↩️</button>
   </div>
 
-  <!-- Screen 5: Game Track -->
+  <!-- Screen 5: Instructions Modal (First Time Play) -->
+  <div class="screen hidden" id="instructions-screen">
+    <div class="modal-card">
+      <h2 style="color:#ffd43b; margin-bottom:12px;">دليل تعليمات المغامرة 📖</h2>
+      <div style="text-align:right; font-size:14px; line-height:1.8; color:#fff; margin-bottom:15px;">
+        <p>🎮 <b>طريقة التحكم:</b> اسحبي الشاشة يميناً ويساراً أو استخدمي الأسهم في الكيبورد/الأزرار بالأسفل.</p>
+        <p>🛹 <b>لوح التزلج:</b> عند شرائه من المتجر، يتفعل تلقائياً كمركبة سريعة تظهر تحت رائدة الفضاء لمنحك ثباتاً ومظهراً مميزاً على سطح المريخ!</p>
+        <p>🛡️ <b>الدرع الواقي:</b> يحميكِ من أول اصطدام دون خسارة النقاط.</p>
+        <p>🐍 <b>نقاط بايثون:</b> اجمعي العملات وأجيبي عن الأسئلة التقنية لزيادة رصيدك.</p>
+      </div>
+      <button class="btn" onclick="soundClick(); startGame();">الانطلاق للعب 🚀</button>
+    </div>
+  </div>
+
+  <!-- Screen 6: Game Track -->
   <div class="screen hidden" id="game-screen" style="padding:0;">
     <div id="game-track">
       <div class="lane"></div><div class="lane"></div><div class="lane"></div>
@@ -211,14 +195,13 @@
       </div>
     </div>
     
-    <!-- أزرار التحكم باللمس -->
     <div class="touch-controls">
       <div class="touch-btn" onclick="moveLeft()">➔</div>
       <div class="touch-btn" onclick="moveRight()">⬅</div>
     </div>
   </div>
 
-  <!-- Screen 6: Quiz Modal -->
+  <!-- Screen 7: Quiz Modal -->
   <div class="screen hidden" id="quiz-screen">
     <div class="modal-card">
       <h2 style="color:#ff4757; margin-bottom:10px;" id="modal-title">تنبيه فضائي! 🛰️</h2>
@@ -233,7 +216,7 @@
     </div>
   </div>
 
-  <!-- Screen 7: Game Over Modal -->
+  <!-- Screen 8: Game Over Modal -->
   <div class="screen hidden" id="game-over-screen">
     <div class="modal-card">
       <h2 style="color:#ff4757; font-size:28px;">انتهت الجولة 🚀</h2>
@@ -246,7 +229,6 @@
 </div>
 
 <script>
-  // أصوات اللعبة
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   function playTone(freq, type, duration) {
     try { const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(); osc.type = type; osc.frequency.value = freq; osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration); osc.stop(audioCtx.currentTime + duration); } catch(e) {}
@@ -256,24 +238,52 @@
   function soundCorrect() { playTone(600, 'triangle', 0.15); setTimeout(()=>playTone(1000,'triangle',0.2), 100); }
   function soundHit() { playTone(150, 'sawtooth', 0.5); }
 
-  // إدارة البيانات المحلية
   let coins = parseInt(localStorage.getItem('mars_python_coins') || '0');
   let suitColor = localStorage.getItem('mars_suit_color') || '#ffffff';
   let hasBoard = localStorage.getItem('mars_has_board') === 'true';
   let hasShield = localStorage.getItem('mars_has_shield') === 'true';
+  let hasSeenInstructions = localStorage.getItem('mars_seen_instructions') === 'true';
 
-  let currentLane = 1, spawnInterval, currentQIdx = 0;
+  let currentLane = 1, spawnInterval;
   let activeEntities = [];
   let isGamePaused = false;
 
   const questions = [
-    { q: "كيف تُرسل مركبات المريخ المعلومات للأرض؟", opts: ["عبر موجات الراديو والاتصال الفضائي", "برقم واتساب مريخي", "بالبريد السريع"], ans: 0 },
+    { q: "كيف تُرسل المركبات الفضائية البيانات من المريخ إلى الأرض؟", opts: ["عبر موجات الراديو والاتصال الفضائي", "عبر كابلات بحرية", "عبر البلوتوث"], ans: 0 },
+    { q: "ما التقنية التي تتيح دراسة المريخ دون الهبوط عليه؟", opts: ["الاستشعار عن بُعد", "المجهر الإلكتروني", "الطباعة ثلاثية الأبعاد"], ans: 0 },
     { q: "ما هي لغة البرمجة الأساسية في الذكاء الاصطناعي للفضاء؟", opts: ["تيك توك", "بايثون (Python)", "فوتوشوب"], ans: 1 },
-    { q: "لماذا سُميت لغة بايثون بهذا الاسم؟", opts: ["بسبب ثعبان الأناكوندا", "نسبة لبرنامج كوميدي (مونتي بايثون)", "لتلتف حول البيانات"], ans: 1 },
-    { q: "كيف نطبع نصاً في شاشة بايثون؟", opts: ["print()", "say()", "write_text()"], ans: 0 }
+    { q: "لماذا سُميت لغة بايثون بهذا الاسم؟", opts: ["نسبة لثعبان الأناكوندا", "نسبة لفرقة كوميدية (مونتي بايثون)", "لتلتف حول البيانات"], ans: 1 },
+    { q: "كيف نطبع نصاً في شاشة بايثون؟", opts: ["print()", "say()", "write_text()"], ans: 0 },
+    { q: "أي مما يلي يُستخدم لتخزين البيانات المتغيرة في بايثون؟", opts: ["المتغيرات (Variables)", "الأزرار", "المكبرات"], ans: 0 },
+    { q: "ما هي فائدة التقنيات الحديثة في استكشاف الكواكب؟", opts: ["تقليل المخاطر على البشر وتوفير الوقت", "الترفيه فقط", "زيادة تكلفة المشاريع"], ans: 0 },
+    { q: "ما المركبة الشهيرة التي أطلقتها ناسا لاستكشاف سطح المريخ؟", opts: ["برسفيرنس (Perseverance)", "تيتانيك", "أبوللو 11"], ans: 0 },
+    { q: "كيف تساعد البرمجة مركبات المريخ على تجاوز العقبات؟", opts: ["عبر تحليل الصور واتخاذ قرارات بالذكاء الاصطناعي", "عبر الاتصال اليومي المباشر بالبشر", "بالصدفة العشوائية"], ans: 0 },
+    { q: "ما الرمز المستخدم للتعليقات في لغة بايثون؟", opts: ["#", "//", "<!-- -->"], ans: 0 },
+    { q: "ما نوع البيانات الذي يعبر عن الأرقام الصحيحة في بايثون؟", opts: ["int", "string", "float"], ans: 0 },
+    { q: "ما نوع البيانات الذي يعبر عن النصوص في بايثون؟", opts: ["str", "bool", "int"], ans: 0 },
+    { q: "كيف نتحقق من شرط معين في لغة بايثون؟", opts: ["باستخدام if", "باستخدام for", "باستخدام print"], ans: 0 },
+    { q: "ما الكوكب المعروف بـ 'الكوكب الأحمر'؟", opts: ["المريخ", "المشتري", "الزهرة"], ans: 0 },
+    { q: "ما الهدف الأساسي من دراسة المريخ عن بُعد؟", opts: ["البحث عن آثار الحياة والماء وتفاصيل التربة", "بناء الملاهي الفضائية", "التصوير الشخصي"], ans: 0 },
+    { q: "ما الجهاز المستخدم لالتقاط الصور الفضائية من المدار؟", opts: ["الأقمار الاصطناعية والمستشعرات", "الكاميرا المنزلية", "التلسكوب اليدوي"], ans: 0 },
+    { q: "ما الأمر المستخدم لاستقبال بيانات من المستخدم في بايثون؟", opts: ["input()", "get()", "read()"], ans: 0 },
+    { q: "ما النتيجة المتوقعة للرمز: 5 + 3 * 2 في البرمجة؟", opts: ["11", "16", "10"], ans: 0 },
+    { q: "ما النسبة التقريبية للزمن الذي يستغرقه ضوء الشمس للوصول للمريخ؟", opts: ["حوالي 12 إلى 20 دقيقة", "ثانية واحدة", "ساعة كاملة"], ans: 0 },
+    { q: "ما المستشعر الذي يحدد المسافات والمجسمات في مركبات الفضاء؟", opts: ["الليدار (LiDAR) والرادار", "مقياس الحرارة العادي", "ساعة اليد"], ans: 0 },
+    { q: "ما القيمة البولينية التي تعبر عن 'الصح' في بايثون؟", opts: ["True", "False", "Yes"], ans: 0 },
+    { q: "ماذا يسمى تكرار تنفيذ الكود عدة مرات في البرمجة؟", opts: ["الحلقات التكرارية (Loops)", "الدوال (Functions)", "الشروط (Conditions)"], ans: 0 },
+    { q: "ما فائدة الدمج بين العلوم والتقنية في مشاريعنا المدرسية؟", opts: ["تحويل المفاهيم النظرية إلى واقع عملي تفاعلي", "زيادة عدد الصفحات فقط", "تعقيد الدراسة"], ans: 0 },
+    { q: "أي من البيئات التالية تُستعمل لكتابة وتشغيل كود بايثون؟", opts: ["Jupyter Notebook / VS Code", "Paint", "Excel"], ans: 0 },
+    { q: "ما اللون السائد على سطح كوكب المريخ؟", opts: ["الأحمر بسبب أكسيد الحديد", "الأزرق بسبب المحيطات", "الأخضر بسبب الأشجار"], ans: 0 }
   ];
 
-  // إعداد البدء
+  // الضغط على Enter للانتقال والدخول
+  document.getElementById('player-name').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') document.getElementById('player-age').focus();
+  });
+  document.getElementById('player-age').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') setupUserAndGoHome();
+  });
+
   document.getElementById('coin-count').innerText = coins;
   updateSuitColor(suitColor);
   if(hasBoard) enableBoard();
@@ -307,6 +317,17 @@
     document.getElementById('btn-buy-board').innerText = hasBoard ? "مُمتلك ✅" : "100 🐍";
     document.getElementById('btn-buy-shield').innerText = hasShield ? "مُمتلك ✅" : "150 🐍";
     document.getElementById('shop-screen').classList.remove('hidden');
+  }
+
+  function checkFirstTimeOrStart() {
+    if (!hasSeenInstructions) {
+      localStorage.setItem('mars_seen_instructions', 'true');
+      hasSeenInstructions = true;
+      hideAllScreens();
+      document.getElementById('instructions-screen').classList.remove('hidden');
+    } else {
+      startGame();
+    }
   }
 
   function updateSuitColor(val) {
@@ -376,7 +397,6 @@
     document.getElementById('player').style.left = lanes[currentLane];
   }
 
-  // دعم السحب باللمس للهواتف
   function setupTouchControls() {
     let startX = 0;
     const track = document.getElementById('game-track');
@@ -470,7 +490,7 @@
   function spawnPortal() {
     const track = document.getElementById('game-track');
     const portal = document.createElement('div');
-    portal.className = "game-entity portal"; portal.innerText = "❓ تحدي بايثون";
+    portal.className = "game-entity portal"; portal.innerText = "❓ تحدي الفضاء والتقنية";
     portal.style.left = "50%";
     portal.style.top = "-50px"; track.appendChild(portal);
 
@@ -492,7 +512,8 @@
     document.getElementById('points-continue-box').classList.add('hidden');
     document.getElementById('modal-title').innerText = isRescue ? (title + " أجيبي للإنقاذ 💥") : "سؤال تقني فضائي 🛰️";
 
-    const qData = questions[currentQIdx % questions.length];
+    const randomIdx = Math.floor(Math.random() * questions.length);
+    const qData = questions[randomIdx];
     document.getElementById('quiz-question-text').innerText = qData.q;
     const container = document.getElementById('quiz-options-container');
     container.innerHTML = "";
@@ -507,10 +528,9 @@
 
   function handleAnswer(isCorrect) {
     if (isCorrect) {
-      soundCorrect(); coins += 30; saveCoins(); showRewardPop("كود صحيح! +30 🐍");
+      soundCorrect(); coins += 30; saveCoins(); showRewardPop("إجابة صحيحة! +30 🐍");
       document.getElementById('quiz-screen').classList.add('hidden');
       clearAllEntities();
-      currentQIdx++;
       resumeGame();
     } else {
       soundHit();
